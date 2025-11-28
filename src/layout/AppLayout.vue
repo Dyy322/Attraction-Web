@@ -23,6 +23,9 @@
         <router-link to="/gifts" class="nav-item">
           🎁 礼品管理
         </router-link>
+        <router-link to="/users" class="nav-item">
+          👨‍👩‍👧‍👦 用户中心
+        </router-link>
       </nav>
     </aside>
 

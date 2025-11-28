@@ -23,6 +23,18 @@ const routes = [
                 component: () => import('@/views/content/Intro.vue'),
                 meta: { title: '简介管理' }
             },
+            {
+                path: 'users',
+                component: () => import('@/views/user/AllUsers.vue'),
+                meta: { title: '用户中心' }
+            },
+            {
+                path: 'user/:id',
+                name: 'UserDetail',
+                component: () => import('@/views/user/UserDetail.vue'),
+                meta: { title: '用户详情' },
+                props: true
+            },
             // 下面目前占位
             { path: 'poi', component: () => import('@/views/dashboard/Dashboard.vue') },
             { path: 'gifts', component: () => import('@/views/dashboard/Dashboard.vue') },
