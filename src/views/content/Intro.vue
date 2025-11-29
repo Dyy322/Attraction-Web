@@ -1,51 +1,82 @@
 <template>
   <div class="bg-white p-6 rounded shadow">
-    <h2 class="text-xl font-bold mb-6">📝 简介管理</h2>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold">📝 简介管理</h2>
+    </div>
 
-    <el-form label-width="100px">
+    <el-form label-width="120px" :model="form">
       <el-form-item label="标题">
         <el-input v-model="form.title" placeholder="请输入标题" />
       </el-form-item>
 
-      <el-form-item label="详细内容">
-        <!-- 富文本编辑器 -->
-        <QuillEditor theme="snow" v-model:content="form.body_md" contentType="html" style="height: 300px; width: 100%" />
+      <el-form-item label="媒体链接">
+        <el-input
+            v-model="mediaUrlStr"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入图片或视频链接，一行一个"
+        />
+        <div class="text-gray-400 text-xs mt-1">请直接输入URL地址，多个地址请换行</div>
       </el-form-item>
 
-      <el-form-item class="mt-12">
-        <el-button type="primary" @click="handleSave" :loading="loading">保存修改</el-button>
+      <el-form-item label="详细内容">
+        <div class="border border-gray-300 rounded w-full">
+          <QuillEditor
+              theme="snow"
+              v-model:content="form.body_md"
+              contentType="html"
+              style="height: 350px;"
+          />
+        </div>
+      </el-form-item>
+
+      <el-form-item class="mt-8">
+        <el-button type="primary" @click="handleSave" :loading="loading" size="large">保存修改</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
-import { getIntro, updateIntro } from '@/api/content' // 引入刚才建的 API
+import { getIntro, updateIntro } from '@/api/content'
 import { ElMessage } from 'element-plus'
 
-const form = ref({
+const loading = ref(false)
+const mediaUrlStr = ref('') // 用于在 Textarea 中显示字符串
+
+const form = reactive({
   title: '',
-  body_md: '', // 这里后端字段叫 body_md，看你要存 markdown 还是 html
+  body_md: '', // 这里存储 Quill 生成的 HTML
   media_urls: []
 })
-const loading = ref(false)
+
+// 监听字符串变化，同步回数组
+watch(mediaUrlStr, (val) => {
+  form.media_urls = val.split('\n').filter(url => url.trim() !== '')
+})
 
 // 加载数据
 const fetchData = async () => {
   try {
-    // const res = await getIntro()
-    // form.value = res.data // 根据实际后端返回结构调整
+    loading.value = true
+    // 调用 API (Mock或真实由 src/api/content.js 决定)
+    const res = await getIntro()
+    const data = res.data || {}
 
-    // --- 模拟数据 (后端没好时用这个) ---
-    form.value = {
-      title: '双山引领区欢迎您',
-      body_md: '<p>这里是南昆山与罗浮山...</p>'
-    }
+    form.title = data.title || ''
+    form.body_md = data.body_md || '' // API 返回的内容
+    form.media_urls = data.media_urls || []
+
+    // 数组转字符串显示
+    mediaUrlStr.value = form.media_urls.join('\n')
   } catch (error) {
     console.error(error)
+    ElMessage.error('数据加载失败')
+  } finally {
+    loading.value = false
   }
 }
 
@@ -53,11 +84,11 @@ const fetchData = async () => {
 const handleSave = async () => {
   loading.value = true
   try {
-    await updateIntro(form.value)
+    await updateIntro(form)
     ElMessage.success('保存成功')
   } catch (error) {
-    // 即使失败也可能是因为后端没好，提示一下
-    ElMessage.error('保存失败 (可能后端接口未就绪)')
+    console.error(error)
+    ElMessage.error('保存失败')
   } finally {
     loading.value = false
   }

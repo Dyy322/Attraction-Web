@@ -1,36 +1,38 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { login as loginApi, logout as logoutApi } from '@/api/auth'
 
 export const useUserStore = defineStore('user', () => {
-    const token = ref(localStorage.getItem('token') || '')
-    const role = ref('admin')
-    const router = useRouter()
+    const token = ref(localStorage.getItem('admin_token') || '')
 
     // 登录动作
-    function login(username, password) {
-        // 真实场景：调用 API
-        // return loginApi({ username, password }).then(res => { ... })
+    const login = async (loginForm) => {
+        try {
+            // 这里的 loginApi 会自动根据环境变量切换真假
+            const res = await loginApi(loginForm)
 
-        // --- 模拟场景 (因为还没对接后端) ---
-        return new Promise((resolve) => {
-            if (username === 'admin' && password === '123456') {
-                token.value = 'mock-token-123456'
-                localStorage.setItem('token', token.value)
-                resolve(true)
-            } else {
-                resolve(false)
-            }
-        })
+            // 假设后端（或 Mock）返回结构包含 token 字段
+            const accessToken = res.token
+
+            token.value = accessToken
+            localStorage.setItem('admin_token', accessToken)
+            return Promise.resolve()
+        } catch (error) {
+            return Promise.reject(error)
+        }
     }
 
-    // 退出动作
-    function logout() {
-        token.value = ''
-        localStorage.removeItem('token')
-        // 强制刷新或跳转
-        window.location.href = '/login'
+    // 登出动作
+    const logout = async () => {
+        try {
+            await logoutApi()
+        } catch (e) {
+            console.warn(e)
+        } finally {
+            token.value = ''
+            localStorage.removeItem('admin_token')
+        }
     }
 
-    return { token, role, login, logout }
+    return { token, login, logout }
 })

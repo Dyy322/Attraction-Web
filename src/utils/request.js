@@ -1,39 +1,39 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
 
-// 创建实例
 const service = axios.create({
-    baseURL: '/api/v1', // 匹配 api.md 中的 Base URL
+    baseURL: import.meta.env.VITE_APP_BASE_API,
     timeout: 10000
 })
 
-// 请求拦截器
+// Request 拦截器
 service.interceptors.request.use(
-    (config) => {
-        // 根据 API 文档，管理端必须带这个 Header
+    config => {
+        const userStore = useUserStore()
+        // 1. 注入管理端身份标识
         config.headers['X-Role'] = 'admin'
-
-        // 如果以后有 Token 逻辑，在这里加
-        // const token = localStorage.getItem('token')
-        // if (token) config.headers['Authorization'] = token
-
+        // 2. 注入 Token
+        if (userStore.token) {
+            config.headers['Authorization'] = `Bearer ${userStore.token}`
+        }
         return config
     },
-    (error) => {
-        return Promise.reject(error)
-    }
+    error => Promise.reject(error)
 )
 
-// 响应拦截器
+// Response 拦截器
 service.interceptors.response.use(
-    (response) => {
-        // 这里假设后端直接返回数据，视具体情况解构
+    response => {
+        // 直接返回 data 部分，方便调用
         return response.data
     },
-    (error) => {
-        // 统一错误提示
-        const msg = error.response?.data?.message || error.message || '请求失败'
-        ElMessage.error(msg)
+    error => {
+        // 处理 401 token 过期等通用错误
+        if (error.response && error.response.status === 401) {
+            const userStore = useUserStore()
+            userStore.logout()
+            location.reload()
+        }
         return Promise.reject(error)
     }
 )
