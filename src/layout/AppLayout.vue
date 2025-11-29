@@ -1,65 +1,50 @@
 <template>
-  <div class="flex h-screen w-screen overflow-hidden bg-gray-50">
-    <!-- 左侧侧边栏 -->
-    <aside class="w-64 bg-slate-800 text-white flex flex-col transition-all">
-      <div class="h-16 flex items-center justify-center text-xl font-bold border-b border-slate-700">
-        双山管理后台
+  <div class="min-h-screen flex bg-gray-100">
+    <aside class="w-64 bg-gray-800 text-white flex flex-col">
+      <div class="h-16 flex items-center justify-center font-bold text-xl border-b border-gray-700">
+        管理后台
       </div>
-
-      <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-        <!-- 这里的 to 对应路由路径 -->
-        <router-link to="/dashboard" class="nav-item">
-          📊 数据概览
-        </router-link>
-        <div class="text-xs text-slate-400 mt-4 mb-2 px-3">内容管理</div>
-        <router-link to="/intro" class="nav-item">
-          📝 简介与活动
-        </router-link>
-
-        <div class="text-xs text-slate-400 mt-4 mb-2 px-3">资源管理</div>
-        <router-link to="/poi" class="nav-item">
-          🏔️ 景点(POI)
-        </router-link>
-        <router-link to="/gifts" class="nav-item">
-          🎁 礼品管理
-        </router-link>
-        <router-link to="/users" class="nav-item">
-          👨‍👩‍👧‍👦 用户中心
-        </router-link>
+      <nav class="flex-1 p-4 space-y-2">
+        <router-link to="/dashboard" class="block py-2 px-4 rounded hover:bg-gray-700">首页</router-link>
+        <div class="text-gray-500 text-xs mt-4 mb-2 uppercase px-4">内容管理</div>
+        <router-link to="/content/intro" class="block py-2 px-4 rounded hover:bg-gray-700">简介管理</router-link>
+        <router-link to="/content/activity" class="block py-2 px-4 rounded hover:bg-gray-700">活动与热线</router-link>
+        <div class="text-gray-500 text-xs mt-4 mb-2 uppercase px-4">资源中心</div>
+        <router-link to="/resource/poi" class="block py-2 px-4 rounded hover:bg-gray-700">景点管理</router-link>
+        <router-link to="/resource/merchant" class="block py-2 px-4 rounded hover:bg-gray-700">商家管理</router-link>
+        <div class="text-gray-500 text-xs mt-4 mb-2 uppercase px-4">营销中心</div>
+        <router-link to="/marketing/gifts" class="block py-2 px-4 rounded hover:bg-gray-700">礼品库</router-link>
+        <router-link to="/marketing/suppliers" class="block py-2 px-4 rounded hover:bg-gray-700">供应商管理</router-link>
+        <router-link to="/marketing/rules" class="block py-2 px-4 rounded hover:bg-gray-700">积分规则</router-link>
+        <div class="text-gray-500 text-xs mt-4 mb-2 uppercase px-4">系统设置</div>
+        <router-link to="/system/roles" class="block py-2 px-4 rounded hover:bg-gray-700">角色管理</router-link>
+        <router-link to="/system/permissions" class="block py-2 px-4 rounded hover:bg-gray-700">权限列表</router-link>
       </nav>
+      <div class="p-4 border-t border-gray-700">
+        <button @click="logout" class="w-full text-left py-2 px-4 rounded hover:bg-red-600 text-sm">退出登录</button>
+      </div>
     </aside>
 
-    <!-- 右侧主体 -->
-    <main class="flex-1 flex flex-col min-w-0">
-      <!-- 顶栏 -->
-      <header class="h-16 bg-white shadow-sm px-6 flex items-center justify-between z-10">
-        <div class="text-gray-500">欢迎回来，管理员</div>
-        <el-dropdown>
-          <span class="el-dropdown-link cursor-pointer flex items-center">
-            <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-            <span class="ml-2">Admin</span>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="$router.push('/login')">退出登录</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+    <main class="flex-1 overflow-auto">
+      <header class="h-16 bg-white shadow flex items-center px-6">
+        <h1 class="text-xl font-semibold text-gray-800">{{ $route.meta.title || '后台管理' }}</h1>
       </header>
-
-      <!-- 内容显示区 -->
-      <div class="flex-1 p-6 overflow-auto">
-        <router-view></router-view>
+      <div class="p-6">
+        <RouterView />
       </div>
     </main>
   </div>
 </template>
 
-<style scoped>
-.nav-item {
-  @apply block p-3 rounded text-slate-300 hover:bg-slate-700 hover:text-white transition-colors;
+<script setup>
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
+
+const userStore = useUserStore()
+const router = useRouter()
+
+const logout = () => {
+  userStore.logout()
+  router.push('/login')
 }
-.router-link-active {
-  @apply bg-blue-600 text-white;
-}
-</style>
+</script>
