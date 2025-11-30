@@ -20,8 +20,10 @@
         <router-link to="/system/roles" class="block py-2 px-4 rounded hover:bg-gray-700">角色管理</router-link>
         <router-link to="/system/permissions" class="block py-2 px-4 rounded hover:bg-gray-700">权限列表</router-link>
       </nav>
-      <div class="p-4 border-t border-gray-700">
-        <button @click="logout" class="w-full text-left py-2 px-4 rounded hover:bg-red-600 text-sm">退出登录</button>
+      <div class="p-4 border-t border-gray-700 bg-gray-900">
+        <button @click="handleLogout" class="w-full flex items-center justify-center py-2 px-4 rounded bg-red-600 hover:bg-red-700 transition text-sm text-white">
+          <span>退出登录</span>
+        </button>
       </div>
     </aside>
 
@@ -39,12 +41,21 @@
 <script setup>
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const userStore = useUserStore()
 const router = useRouter()
 
-const logout = () => {
-  userStore.logout()
-  router.push('/login')
+const handleLogout = () => {
+  ElMessageBox.confirm('确定要退出登录吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    // 执行登出逻辑
+    await userStore.logout()
+    ElMessage.success('已退出登录')
+    router.push('/login')
+  }).catch(() => {})
 }
 </script>

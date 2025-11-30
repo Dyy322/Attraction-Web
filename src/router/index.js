@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-
-// 简单的布局外壳 (如果你的 src/layout/AppLayout.vue 还没写，可以先用这个)
-import AppLayout from '@/layout/AppLayout.vue'
+import AppLayout from '@/layout/AppLayout.vue' // 确保引入布局
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -107,13 +105,27 @@ const router = createRouter({
     ]
 })
 
-// 路由守卫：检查 Token
+// 🟢 需求2：全局路由守卫 (未登录不能访问 dashboard)
 router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
-    if (to.path !== '/login' && !userStore.token) {
-        next('/login')
+
+    // 检查是否有 token
+    const hasToken = !!userStore.token
+
+    if (to.path === '/login') {
+        // 如果已登录，去登录页则自动跳回首页
+        if (hasToken) {
+            next({ path: '/' })
+        } else {
+            next()
+        }
     } else {
-        next()
+        // 如果访问非登录页，且没有 token -> 重定向到登录页
+        if (!hasToken) {
+            next(`/login?redirect=${to.path}`)
+        } else {
+            next()
+        }
     }
 })
 
