@@ -99,7 +99,19 @@ const router = createRouter({
                     name: 'permissions',
                     component: () => import('@/views/system/PermissionList.vue'),
                     meta: { title: '权限列表' }
-                }
+                },
+                {
+                    path: 'system/users',
+                    name: 'users',
+                    component: () => import('@/views/system/user/AllUsers.vue'),
+                    meta: { title: '用户管理' }
+                },
+                {
+                    path: 'system/users/:id',
+                    name: 'user-detail',
+                    component: () => import('@/views/system/user/UserDetail.vue'),
+                    meta: { title: '用户详情' }
+                },
             ]
         }
     ]

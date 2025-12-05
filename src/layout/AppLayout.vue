@@ -19,6 +19,7 @@
         <div class="text-gray-500 text-xs mt-4 mb-2 uppercase px-4">系统设置</div>
         <router-link to="/system/roles" class="block py-2 px-4 rounded hover:bg-gray-700">角色管理</router-link>
         <router-link to="/system/permissions" class="block py-2 px-4 rounded hover:bg-gray-700">权限列表</router-link>
+        <router-link to="/system/users" class="block py-2 px-4 rounded hover:bg-gray-700">用户管理</router-link>
       </nav>
       <div class="p-4 border-t border-gray-700 bg-gray-900">
         <button @click="handleLogout" class="w-full flex items-center justify-center py-2 px-4 rounded bg-red-600 hover:bg-red-700 transition text-sm text-white">

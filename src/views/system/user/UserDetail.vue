@@ -81,18 +81,15 @@ onMounted(() => {
 
 <template>
   <div class="user-detail-page">
-    <!-- 头部导航 -->
-    <div class="page-header">
-      <el-button class="back-btn" type="primary" link @click="router.back()">
-        <el-icon><ArrowLeft /></el-icon>
-        返回用户列表
-      </el-button>
-    </div>
 
     <div class="content-grid">
       <!-- 左侧用户信息卡片 -->
       <div class="sidebar-section">
         <el-card class="user-profile-card" shadow="hover">
+          <el-button class="back-btn" type="primary" link @click="router.back()">
+            <el-icon><ArrowLeft /></el-icon>
+            返回用户列表
+          </el-button>
           <div class="profile-header">
             <div class="avatar-container">
               <el-avatar :size="100" :src="userDetail.avatar_url" class="profile-avatar" />
@@ -107,26 +104,7 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="profile-stats">
-            <div class="stat-item">
-              <div class="stat-icon points">
-                <el-icon><Trophy /></el-icon>
-              </div>
-              <div class="stat-content">
-                <div class="stat-value">{{ userDetail.totalPoints }}</div>
-                <div class="stat-label">总积分</div>
-              </div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-icon checkins">
-                <el-icon><Location /></el-icon>
-              </div>
-              <div class="stat-content">
-                <div class="stat-value">{{ userDetail.checkinCount }}</div>
-                <div class="stat-label">打卡次数</div>
-              </div>
-            </div>
-          </div>
+
 
           <div class="profile-details">
             <div class="detail-item">
@@ -163,7 +141,7 @@ onMounted(() => {
               :data="activityLogs"
               class="activity-table"
               :row-class-name="() => 'activity-row'"
-              max-height="280"
+              max-height="305"
           >
             <el-table-column prop="time" label="时间" width="180">
               <template #default="{ row }">
@@ -289,11 +267,6 @@ onMounted(() => {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 }
 
-.user-profile-card:hover {
-  transform: translateY(-2px);
-  transition: all 0.3s ease;
-}
-
 .profile-header {
   text-align: center;
   padding: 24px 0;
@@ -351,46 +324,6 @@ onMounted(() => {
   padding: 4px 12px;
 }
 
-/* 统计信息样式 */
-.profile-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  padding: 24px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: white;
-}
-
-.stat-icon.points {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.stat-icon.checkins {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.stat-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: #2d3748;
-}
-
 .stat-label {
   font-size: 12px;
   color: #718096;
@@ -443,12 +376,14 @@ onMounted(() => {
   background: white;
 }
 
+/*
 .page-header:hover,
 .activity-card:hover,
 .stats-card:hover {
   transform: translateY(-1px);
   transition: all 0.2s ease;
 }
+ */
 
 .card-header {
   display: flex;
@@ -537,10 +472,12 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 
+/*
 .stat-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
+ */
 
 .stat-icon-wrapper {
   width: 60px;

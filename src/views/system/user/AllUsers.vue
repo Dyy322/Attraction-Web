@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {Clock, Delete, Location, Phone, Refresh, Search, Star, View} from "@element-plus/icons-vue";
-import { getUsers } from '@/api/user'
+import { getUsers } from '@/api/user.js'
 
 const router = useRouter()
 
@@ -109,7 +109,7 @@ const handleReset = () => {
 
 // 查看用户详情
 const viewUserDetail = (userId) => {
-  router.push(`/user/${userId}`)
+  router.push(`/system/users/${userId}`)
 }
 
 // 分页变化
@@ -125,11 +125,11 @@ onMounted(() => {
 
 <template>
   <div class="users-page">
-    <!-- 页面标题 -->
-    <div class="page-header">
-      <h1 class="page-title">👥 用户管理</h1>
-      <p class="page-subtitle">管理平台用户信息，查看用户详情和活动记录</p>
-    </div>
+<!--    &lt;!&ndash; 页面标题 &ndash;&gt;-->
+<!--    <div class="page-header">-->
+<!--      <h1 class="page-title">👥 用户管理</h1>-->
+<!--      <p class="page-subtitle">管理平台用户信息，查看用户详情和活动记录</p>-->
+<!--    </div>-->
 
     <!-- 搜索区域 -->
     <el-card class="search-card" shadow="hover">
@@ -340,29 +340,6 @@ onMounted(() => {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-/* 页面标题样式 */
-.page-header {
-  margin-bottom: 24px;
-  padding: 0 8px;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2d3748;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.page-subtitle {
-  font-size: 1rem;
-  color: #718096;
-  margin: 0;
-}
-
 /* 卡片样式，一起定义 */
 .search-card,
 .list-card {
@@ -372,12 +349,6 @@ onMounted(() => {
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-}
-
-.search-card:hover,
-.list-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* 卡片头部样式 */
